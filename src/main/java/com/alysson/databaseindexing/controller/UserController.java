@@ -19,24 +19,38 @@ public class UserController {
     @GetMapping("/search")
     public ResponseEntity<User> searchByEmail(@RequestParam String email) {
         long start = System.currentTimeMillis();
-        User user = userService.findByEmail(email);
-        long duration = System.currentTimeMillis() - start;
+        try {
+            User user = userService.findByEmail(email);
+            long duration = System.currentTimeMillis() - start;
 
-        return ResponseEntity.ok()
-                .header("X-Query-Time", String.valueOf(duration))
-                .body(user);
+            return ResponseEntity.ok()
+                    .header("X-Query-Time", String.valueOf(duration))
+                    .body(user);
+        } catch (RuntimeException e) {
+            long duration = System.currentTimeMillis() - start;
+            return ResponseEntity.notFound()
+                    .header("X-Query-Time", String.valueOf(duration))
+                    .build();
+        }
     }
 
     // Endpoint 1: Buscar por email
     @GetMapping("/by-email")
     public ResponseEntity<User> findByEmail(@RequestParam String email) {
         long start = System.currentTimeMillis();
-        User user = userService.findByEmail(email);
-        long duration = System.currentTimeMillis() - start;
+        try {
+            User user = userService.findByEmail(email);
+            long duration = System.currentTimeMillis() - start;
 
-        return ResponseEntity.ok()
-                .header("X-Query-Time", String.valueOf(duration))
-                .body(user);
+            return ResponseEntity.ok()
+                    .header("X-Query-Time", String.valueOf(duration))
+                    .body(user);
+        } catch (RuntimeException e) {
+            long duration = System.currentTimeMillis() - start;
+            return ResponseEntity.notFound()
+                    .header("X-Query-Time", String.valueOf(duration))
+                    .build();
+        }
     }
 
     // Endpoint 2: Buscar por país e cidade

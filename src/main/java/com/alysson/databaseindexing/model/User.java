@@ -20,15 +20,13 @@ public class User {
     private String email;
     @Column(unique = true, nullable = false)
     private String username;
-    @Column(nullable = false)
+    @Column(name = "first_name")
     private String firstName;
-    @Column(nullable = false)
+    @Column(name = "last_name")
     private String lastName;
     @Column(nullable = false)
     private LocalDateTime createdAt;
-    @Column(nullable = false)
     private String country;
-    @Column(nullable = false)
     private String city;
 
     private String status;

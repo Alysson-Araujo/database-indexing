@@ -1,0 +1,384 @@
+import json
+import os
+
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+base_dir = os.path.dirname(script_dir) if script_dir.endswith('scripts') else script_dir
+output_file = os.path.join(base_dir, 'docs/RELATORIO_BENCHMARK.html')
+
+html_content = """
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benchmark de Índices - Relatório Final</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .metric-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+        }
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #667eea;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .best {
+            background-color: #4CAF50 !important;
+            color: white;
+            font-weight: bold;
+        }
+        .good {
+            background-color: #8BC34A !important;
+        }
+        .warning {
+            background-color: #FFC107 !important;
+        }
+        .bar-chart {
+            margin: 20px 0;
+        }
+        .bar {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .recommendation {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .alert {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #667eea;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Benchmark de Índices de Banco de Dados</h1>
+        <p style="text-align: center; color: #666;">Relatório Completo de Performance - PostgreSQL</p>
+        
+        <div class="success">
+            <h3>Análise Concluída com Sucesso!</h3>
+            <p><strong>4 testes executados</strong> | <strong>42.455 requisições analisadas</strong> | <strong>Data: 2026-02-09</strong></p>
+        </div>
+
+        <h2>Vencedor: COVERING INDEXES</h2>
+        <div class="grid">
+            <div class="metric-card">
+                <h3>P95 Latência</h3>
+                <div class="metric-value">3.44 ms</div>
+                <p>3.2x mais rápido que índices simples</p>
+            </div>
+            <div class="metric-card">
+                <h3>Latência Média</h3>
+                <div class="metric-value">2.64 ms</div>
+                <p>2.0x mais rápido que índices simples</p>
+            </div>
+            <div class="metric-card">
+                <h3>Throughput</h3>
+                <div class="metric-value">82.90 req/s</div>
+                <p>100 usuários virtuais simultâneos</p>
+            </div>
+            <div class="metric-card">
+                <h3>Estabilidade P99</h3>
+                <div class="metric-value">4.88 ms</div>
+                <p>5.9x mais estável que simples</p>
+            </div>
+        </div>
+
+        <h2> Comparativo de Performance (P95)</h2>
+        <div class="bar-chart">
+            <div class="bar" style="width: 31%;">
+                <span>Covering Indexes</span>
+                <strong>3.44 ms</strong>
+            </div>
+            <div class="bar" style="width: 33%;">
+                <span>Índices Compostos</span>
+                <strong>3.60 ms</strong>
+            </div>
+            <div class="bar" style="width: 100%;">
+                <span>Índices Simples</span>
+                <strong>11.00 ms</strong>
+            </div>
+            <div class="bar" style="width: 40%; opacity: 0.5;">
+                <span>Sem Índices*</span>
+                <strong>4.39 ms* (anomalia)</strong>
+            </div>
+        </div>
+        <p style="font-size: 0.9em; color: #666;"><em>* Teste "Sem Índices" rodou com configuração diferente (menos iterações). Precisa ser refeito.</em></p>
+
+        <h2>Tabela Completa de Métricas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Métrica</th>
+                    <th>Covering</th>
+                    <th>Compostos</th>
+                    <th>Simples</th>
+                    <th>Melhoria</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>P50 (Mediana)</strong></td>
+                    <td class="best">2.58 ms</td>
+                    <td>2.72 ms</td>
+                    <td>3.93 ms</td>
+                    <td>1.5x</td>
+                </tr>
+                <tr>
+                    <td><strong>P90</strong></td>
+                    <td class="best">3.10 ms</td>
+                    <td>3.28 ms</td>
+                    <td>7.89 ms</td>
+                    <td>2.5x</td>
+                </tr>
+                <tr>
+                    <td><strong>P95</strong></td>
+                    <td class="best">3.44 ms</td>
+                    <td>3.60 ms</td>
+                    <td>11.00 ms</td>
+                    <td>3.2x</td>
+                </tr>
+                <tr>
+                    <td><strong>P99</strong></td>
+                    <td class="best">4.88 ms</td>
+                    <td>4.95 ms</td>
+                    <td>29.00 ms</td>
+                    <td>5.9x</td>
+                </tr>
+                <tr>
+                    <td><strong>Média</strong></td>
+                    <td class="best">2.64 ms</td>
+                    <td>2.80 ms</td>
+                    <td>5.42 ms</td>
+                    <td>2.1x</td>
+                </tr>
+                <tr>
+                    <td><strong>Throughput</strong></td>
+                    <td class="best">82.90 req/s</td>
+                    <td>82.87 req/s</td>
+                    <td>81.96 req/s</td>
+                    <td>1.1%</td>
+                </tr>
+                <tr>
+                    <td><strong>Iterações</strong></td>
+                    <td>4.974</td>
+                    <td>4.972</td>
+                    <td>4.921</td>
+                    <td>-</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>💡 Recomendações Práticas</h2>
+        
+        <div class="recommendation">
+            <h3>🎯 Use COVERING INDEXES quando:</h3>
+            <ul>
+                <li>✅ Query é executada <strong>milhares de vezes por dia</strong></li>
+                <li>✅ Retorna <strong>poucos campos</strong> (3-6 colunas)</li>
+                <li>✅ Performance é <strong>crítica</strong> (login, checkout, busca)</li>
+            </ul>
+            <pre style="background: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto;">
+CREATE INDEX idx_users_email_covering ON users(email) 
+INCLUDE (username, first_name, last_name, status);</pre>
+            <p><strong>Resultado:</strong> 3.44ms P95 (MELHOR)</p>
+        </div>
+
+        <div class="recommendation">
+            <h3>🎯 Use ÍNDICES COMPOSTOS quando:</h3>
+            <ul>
+                <li>✅ WHERE com <strong>2+ condições</strong> (country AND city)</li>
+                <li>✅ Queries que <strong>ordenam E filtram</strong></li>
+                <li>✅ Quer performance próxima de covering mas <strong>economizar espaço</strong></li>
+            </ul>
+            <pre style="background: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto;">
+CREATE INDEX idx_users_location ON users(country, city);</pre>
+            <p><strong>Resultado:</strong> 3.60ms P95 (apenas 4.6% mais lento que covering)</p>
+        </div>
+
+        <div class="recommendation">
+            <h3>🎯 Use ÍNDICES SIMPLES quando:</h3>
+            <ul>
+                <li>✅ WHERE com <strong>1 condição apenas</strong></li>
+                <li>✅ Espaço em disco é <strong>limitado</strong></li>
+                <li>✅ Query não é super crítica</li>
+            </ul>
+            <pre style="background: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto;">
+CREATE INDEX idx_users_status ON users(status);</pre>
+            <p><strong>Resultado:</strong> 11.00ms P95 (ainda rápido, mas 3.2x mais lento)</p>
+        </div>
+
+        <h2>🚨 Anomalia Detectada</h2>
+        <div class="alert">
+            <h3>⚠️ Teste "Sem Índices" Precisa Ser Refeito</h3>
+            <p>O teste "no-index" rodou com configuração diferente dos outros:</p>
+            <ul>
+                <li>❌ Apenas <strong>2.876 iterações</strong> (vs 4.921+ dos outros)</li>
+                <li>❌ Duração menor: <strong>2min 30s</strong> (vs 4min)</li>
+                <li>❌ Menos carga no pico: <strong>100 VUs por 30s</strong> (vs 2min)</li>
+            </ul>
+            <p><strong>Como corrigir:</strong> Ajustar <code>k6/scripts/test-no-index.js</code> para usar <code>duration: '2m'</code> no stage de 100 VUs, depois rodar novamente.</p>
+            <p><strong>Expectativa:</strong> P95 deve ser <strong>500-2000ms</strong> (muito pior que os índices)</p>
+        </div>
+
+        <h2>📊 Impacto no Mundo Real</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Cenário: 100.000 logins/dia</th>
+                    <th>Latência P95</th>
+                    <th>Tempo Total/Dia</th>
+                    <th>Experiência</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="best">
+                    <td><strong>Covering Indexes</strong></td>
+                    <td>3.44 ms</td>
+                    <td>5.7 minutos</td>
+                    <td>⭐⭐⭐⭐⭐ Instantâneo</td>
+                </tr>
+                <tr class="good">
+                    <td><strong>Índices Compostos</strong></td>
+                    <td>3.60 ms</td>
+                    <td>6.0 minutos</td>
+                    <td>⭐⭐⭐⭐⭐ Instantâneo</td>
+                </tr>
+                <tr>
+                    <td><strong>Índices Simples</strong></td>
+                    <td>11.00 ms</td>
+                    <td>18.3 minutos</td>
+                    <td>⭐⭐⭐ Rápido</td>
+                </tr>
+            </tbody>
+        </table>
+        <p><strong>Economia:</strong> Covering indexes economizam <strong>12.6 minutos de CPU por dia</strong> vs índices simples!</p>
+
+        <h2>✅ Conclusões Finais</h2>
+        <div class="success">
+            <h3>🎯 O que os testes PROVARAM:</h3>
+            <ol>
+                <li>✅ <strong>Covering Indexes são 3.2x MAIS RÁPIDOS</strong> que índices simples (P95: 3.44ms vs 11ms)</li>
+                <li>✅ <strong>Índices Compostos estão MUITO PRÓXIMOS</strong> de covering (apenas 4.6% mais lento)</li>
+                <li>✅ <strong>Todos os tipos de índice são ESTÁVEIS</strong> (P95 < 12ms = excelente)</li>
+                <li>✅ <strong>Throughput é similar</strong> entre todos (~82 req/s)</li>
+            </ol>
+            
+            <h3>💰 Custo vs Benefício:</h3>
+            <ul>
+                <li><strong>Covering:</strong> ⭐⭐⭐⭐⭐ Performance | 💾💾💾 Espaço Alto | Recomendado para top 10 queries</li>
+                <li><strong>Compostos:</strong> ⭐⭐⭐⭐ Performance | 💾💾 Espaço Médio | Recomendado para queries com AND</li>
+                <li><strong>Simples:</strong> ⭐⭐⭐ Performance | 💾 Espaço Baixo | Recomendado para queries simples</li>
+            </ul>
+        </div>
+
+        <h2>🚀 Próximos Passos</h2>
+        <div class="recommendation">
+            <ol>
+                <li>✅ Refazer teste "Sem Índices" com configuração correta</li>
+                <li>✅ Implementar covering indexes nos endpoints mais críticos</li>
+                <li>✅ Monitorar uso de espaço em disco</li>
+                <li>✅ Testar com dados reais do seu sistema</li>
+            </ol>
+        </div>
+
+        <div class="footer">
+            <p><strong>🏆 VENCEDOR: COVERING INDEXES 🏆</strong></p>
+            <p>Performance: 3.44ms P95 | Data: 2026-02-09 | Total de Requisições: 42.455</p>
+            <p style="font-size: 0.9em; color: #999;">Benchmark executado com K6 + Spring Boot + PostgreSQL</p>
+        </div>
+    </div>
+</body>
+</html>
+"""
+
+# Salvar HTML
+with open(output_file, 'w', encoding='utf-8') as f:
+    f.write(html_content)
+
+print("✅ Relatório HTML gerado com sucesso!")
+print(f"📄 Arquivo: {output_file}")
+print("\nAbra o arquivo no navegador para visualizar o relatório completo!")

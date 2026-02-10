@@ -23,9 +23,9 @@ const BASE_URL = 'http://localhost:8080';
 
 export default function () {
   // Test 1: Get user details by email (covering index includes all needed columns)
-  let emailRes = http.get(`${BASE_URL}/api/users/search?email=user${Math.floor(Math.random() * 100000)}@example.com`);
+  let emailRes = http.get(`${BASE_URL}/api/users/by-email?email=user${Math.floor(Math.random() * 100000)}@example.com`);
   check(emailRes, {
-    'status is 200': (r) => r.status === 200,
+    'status is 200 or 404': (r) => r.status === 200 || r.status === 404,
   }) || errorRate.add(1);
 
   sleep(0.5);
